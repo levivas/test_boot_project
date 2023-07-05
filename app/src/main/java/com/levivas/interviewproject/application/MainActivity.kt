@@ -31,17 +31,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         applyEdgeToEdge()
         initNavigation()
-        // Sets up permissions request launcher.
-        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-            } else {
-                Snackbar.make(
-                    findViewById<View>(android.R.id.content).rootView,
-                    "Please grant Notification permission from App Settings",
-                    Snackbar.LENGTH_LONG
-                ).show()
+        handleNotificationPermission()
+    }
+
+    private fun handleNotificationPermission() {
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                if (it) {
+                } else {
+                    Snackbar.make(
+                        findViewById<View>(android.R.id.content).rootView,
+                        "Please grant Notification permission from App Settings",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
             }
-        }
 
         if (ContextCompat.checkSelfPermission(
                 this,
