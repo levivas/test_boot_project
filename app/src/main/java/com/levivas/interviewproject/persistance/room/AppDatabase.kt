@@ -2,12 +2,12 @@ package com.levivas.interviewproject.persistance.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.levivas.interviewproject.models.local.Main
+import com.levivas.interviewproject.models.local.BootCompletedTimestamp
 
 @Database(
-    entities = [Main::class],
+    entities = [BootCompletedTimestamp::class],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun mainDao(): MainDao
+    abstract fun bootCompletedDao(): BootCompletedDao
 }

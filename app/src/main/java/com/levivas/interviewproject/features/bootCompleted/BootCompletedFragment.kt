@@ -1,4 +1,4 @@
-package com.levivas.interviewproject.features.main
+package com.levivas.interviewproject.features.bootCompleted
 
 import android.os.Bundle
 import android.view.View
@@ -8,17 +8,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.levivas.interviewproject.R
+import com.levivas.interviewproject.databinding.FragmentBootCompletedBinding
 import com.levivas.interviewproject.extensions.viewBinding
-import com.levivas.interviewproject.databinding.FragmentMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainFragment : Fragment(R.layout.fragment_main) {
-    private val binding by viewBinding(FragmentMainBinding::bind)
-    private val viewModel by viewModels<MainViewModel>()
+class BootCompletedFragment : Fragment(R.layout.fragment_boot_completed) {
+    private val binding by viewBinding(FragmentBootCompletedBinding::bind)
+    private val viewModel by viewModels<BootCompletedViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,7 +29,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun observeChanges() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getItems().collectLatest {
+                viewModel.getBootCompletedTimestamps().collectLatest {
                     binding.tvBootCounter.text = when(it.size) {
                         0 -> "No boots detected"
                         else -> {

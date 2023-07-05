@@ -1,53 +1,66 @@
 package com.levivas.interviewproject.extensions
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.levivas.interviewproject.R
 import com.levivas.interviewproject.application.MainActivity
 
-class NotificationHelper(val context: Context) {
-    private  val CHANNEL_ID  = "reminder_channel_id"
-    private  val NOTIFICATION_ID = 1
+const val CHANNEL_ID  = "reminder_channel_id"
+const val CHANNEL_NAME  = "Counter notification"
+const val CHANNEL_DESCRIPTION  = "Every 15 min triggers changing counter"
+const val NOTIFICATION_ID = 1
 
-    fun createNotification(title: String, message: String){
+class NotificationHelper (private val context: Context) {
+    fun createNotification(description: String){
         createNotificationChannel()
         val intent = Intent(context, MainActivity:: class.java).apply{
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        var pendingIntent: PendingIntent? = null
-        pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val pendingIntent: PendingIntent? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
         } else {
-            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+            PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            )
         }
-//        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         val icon = BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_background)
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setLargeIcon(icon)
-            .setContentTitle(title)
-            .setContentText(message)
-//            .setStyle(
-//                NotificationCompat.BigPictureStyle().bigPicture(icon).bigLargeIcon(null)
-//            )
+            .setContentTitle("Boot completed counter")
+            .setContentText(description)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
             .build()
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
 
     }
 
     private fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT ).apply {
-                description = "Reminder Channel Description"
+            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = CHANNEL_DESCRIPTION
             }
             val notificationManager =  context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)

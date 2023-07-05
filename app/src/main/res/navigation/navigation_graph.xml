@@ -5,6 +5,6 @@
     android:id="@+id/navigation_graph">
     <fragment
         android:id="@+id/fragmentMain"
-        android:name="com.levivas.interviewproject.features.main.MainFragment"
-        tools:layout="@layout/fragment_main"/>
+        android:name="com.levivas.interviewproject.features.bootCompleted.BootCompletedFragment"
+        tools:layout="@layout/fragment_boot_completed"/>
 </navigation>
