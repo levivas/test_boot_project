@@ -9,7 +9,7 @@ import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-const val MAIN_WORKER_NAME_PERIODIC = "mainWorkerPeriodic"
+const val BOOT_COMPLETED_WORKER_NAME_PERIODIC = "bootCompletedWorkerPeriodic"
 
 @AndroidEntryPoint
 class StartUpBootReceiver : BroadcastReceiver() {
@@ -22,7 +22,7 @@ class StartUpBootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             workManager.enqueueUniquePeriodicWork(
-                MAIN_WORKER_NAME_PERIODIC,
+                BOOT_COMPLETED_WORKER_NAME_PERIODIC,
                 ExistingPeriodicWorkPolicy.UPDATE,
                 periodicWorkRequest
             )
